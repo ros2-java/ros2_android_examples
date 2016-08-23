@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="ROS2 Listener for Android"
+      android:padding="10dp"
+      android:textColor="#FFFFFF"/>
+
+    <Button
+        android:id="@+id/buttonStart"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Start"/>
+
+    <Button
+        android:id="@+id/buttonStop"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Stop"/>
+
+    <TextView
+        android:id="@+id/listenerView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical"
+        android:gravity="bottom"/>
+</LinearLayout>

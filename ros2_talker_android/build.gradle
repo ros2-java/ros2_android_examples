@@ -1,0 +1,89 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.0'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "23.0.3"
+    if (project.hasProperty('ament.build_space')) {
+        buildDir = file(project.getProperty('ament.build_space'))
+        sourceSets {
+            main {
+                jniLibs.srcDirs = [[buildDir, 'jniLibs'].join(File.separator)]
+            }
+        }
+    }
+}
+
+if (project.hasProperty('ament.build_space') && project.hasProperty('ament.install_space')) {
+    def installSpaceDir = file(project.getProperty('ament.install_space'))
+    def buildSpaceDir = file(project.getProperty('ament.build_space'))
+
+    project.buildDir = buildSpaceDir
+ 
+    task deployArtifacts << {
+        copy {
+            description = "Copy artifacts to the install space"
+ 
+            from("$buildSpaceDir") {
+                include '**/*.apk'
+            }
+            into "$installSpaceDir"
+            includeEmptyDirs = false
+            eachFile { details ->
+                details.path = details.file.name
+            }
+        }
+    }
+
+    if (project.hasProperty('ament.android_stl') && project.hasProperty('ament.android_abi') && project.hasProperty('ament.android_ndk')) {
+        def androidSTL = project.getProperty('ament.android_stl')
+        def androidABI = project.getProperty('ament.android_abi')
+        def androidNDK = project.getProperty('ament.android_ndk')
+ 
+        // def stlDestination = ['src', 'main', 'jniLibs', androidABI].join(File.separator)
+        def stlDestination = [buildSpaceDir, 'jniLibs', androidABI].join(File.separator)
+
+        task cleanNativeLibs(type: Delete) {
+            delete "$stlDestination"
+        }
+
+        task copyNativeLibs(type: Copy) {
+            project.getProperty('ament.dependencies').split(':').each {
+                def fp = [file(it).parentFile.parentFile, 'lib'].join(File.separator)
+                def ft = fileTree(dir: fp, include: '*.so')
+                from ft
+                into "$stlDestination"
+            }
+
+            // TODO(esteve): expand this to support other STL libraries
+            def stlLibraryPath = [
+                androidNDK, 'sources', 'cxx-stl', 'gnu-libstdc++', '4.9', 'libs', androidABI, 'lib' + androidSTL + '.so'
+            ].join(File.separator)
+ 
+            from stlLibraryPath
+        }
+
+        copyNativeLibs.dependsOn cleanNativeLibs
+
+        tasks.withType(JavaCompile) { compileTask -> compileTask.dependsOn copyNativeLibs }
+    }
+
+    assemble.finalizedBy deployArtifacts
+}
+
+dependencies {
+    if (project.hasProperty('ament.dependencies')) {
+        project.getProperty('ament.dependencies').split(':').each {
+            compile fileTree(dir: [it, 'java'].join(File.separator), include: '*.jar')
+        }
+    }
+}
