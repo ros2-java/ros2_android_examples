@@ -2,16 +2,16 @@ apply plugin: 'com.android.application'
 apply plugin: org.ros2.tools.gradle.AmentPlugin
 
 buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-        maven {
-          url "https://plugins.gradle.org/m2/"
-        }
+  repositories {
+    jcenter()
+    mavenCentral()
+    maven {
+      url "https://plugins.gradle.org/m2/"
     }
+  }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0+'
-        classpath 'gradle.plugin.org.ros2.tools.gradle:ament:0.1.0'
-    }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:2.2.0+'
+    classpath 'gradle.plugin.org.ros2.tools.gradle:ament:0.1.0'
+  }
 }
