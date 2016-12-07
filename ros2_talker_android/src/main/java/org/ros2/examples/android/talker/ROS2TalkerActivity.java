@@ -24,9 +24,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-import org.ros2.rcljava.Node;
-import org.ros2.rcljava.Publisher;
 import org.ros2.rcljava.RCLJava;
+import org.ros2.rcljava.node.Node;
+import org.ros2.rcljava.publisher.Publisher;
 
 public class ROS2TalkerActivity extends Activity {
 
