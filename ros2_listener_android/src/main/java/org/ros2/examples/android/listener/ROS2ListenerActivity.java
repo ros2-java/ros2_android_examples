@@ -26,10 +26,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.ros2.rcljava.Consumer;
-import org.ros2.rcljava.Node;
 import org.ros2.rcljava.RCLJava;
-import org.ros2.rcljava.Subscription;
+import org.ros2.rcljava.consumers.Consumer;
+import org.ros2.rcljava.node.Node;
+import org.ros2.rcljava.subscription.Subscription;
 
 public class ROS2ListenerActivity extends Activity {
 
