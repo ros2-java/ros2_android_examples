@@ -2,8 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: org.ros2.tools.gradle.AmentPlugin
 
 android {
-  buildToolsVersion "25.0.1"
-  compileSdkVersion 22
+  compileSdkVersion 25
+  buildToolsVersion "25.0.2"
+  defaultConfig {
+    minSdkVersion 21
+    targetSdkVersion 25
+  }
 }
 
 buildscript {
