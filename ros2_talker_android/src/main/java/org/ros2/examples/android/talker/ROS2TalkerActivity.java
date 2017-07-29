@@ -26,43 +26,11 @@ import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.publisher.Publisher;
 
-import org.ros2.android.activity.ROSActivity
+import org.ros2.android.activity.ROSActivity;
 
 public class ROS2TalkerActivity extends ROSActivity {
 
-  private Talker talker;
-
-  private class Talker extends AsyncTask<String, Void, String> {
-    @Override
-    protected String doInBackground(final String... text) {
-      Node node = RCLJava.createNode("talker");
-      Publisher<std_msgs.msg.String> chatterPublisher =
-          node.<std_msgs.msg.String>createPublisher(std_msgs.msg.String.class,
-            "chatter");
-
-      std_msgs.msg.String msg = new std_msgs.msg.String();
-
-      int i = 1;
-
-      while (!isCancelled()) {
-        msg.setData(text[0] + ": " + i);
-        i++;
-        chatterPublisher.publish(msg);
-
-        try {
-          Thread.sleep(1000);
-        } catch (InterruptedException ie) {
-          Log.e(logtag, "Failed to sleep for a second");
-        }
-      }
-
-      return null;
-    }
-
-    @Override
-    protected final void onPostExecute(final String result) {
-    }
-  }
+  private TalkerNode talkerNode;
 
   private static String logtag = ROS2TalkerActivity.class.getName();
 
@@ -72,30 +40,32 @@ public class ROS2TalkerActivity extends ROSActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
 
-    Button buttonStart = (Button) findViewById(R.id.buttonStart);
+    Button buttonStart = (Button)findViewById(R.id.buttonStart);
     buttonStart.setOnClickListener(startListener);
 
-    Button buttonStop = (Button) findViewById(R.id.buttonStop);
+    Button buttonStop = (Button)findViewById(R.id.buttonStop);
     buttonStop.setOnClickListener(stopListener);
     buttonStop.setEnabled(false);
 
     RCLJava.rclJavaInit();
+
+    talkerNode = new TalkerNode("android_talker_node", "topic");
   }
 
-  //Create an anonymous implementation of OnClickListener
+  // Create an anonymous implementation of OnClickListener
   private OnClickListener startListener = new OnClickListener() {
     public void onClick(final View view) {
       Log.d(logtag, "onClick() called - start button");
-      Toast.makeText(ROS2TalkerActivity.this, "The Start button was clicked.",
-        Toast.LENGTH_LONG).show();
+      Toast
+          .makeText(ROS2TalkerActivity.this, "The Start button was clicked.",
+                    Toast.LENGTH_LONG)
+          .show();
       Log.d(logtag, "onClick() ended - start button");
-      Button buttonStart = (Button) findViewById(R.id.buttonStart);
-      Button buttonStop = (Button) findViewById(R.id.buttonStop);
+      Button buttonStart = (Button)findViewById(R.id.buttonStart);
+      Button buttonStop = (Button)findViewById(R.id.buttonStop);
       buttonStart.setEnabled(false);
       buttonStop.setEnabled(true);
-
-      talker = new Talker();
-      talker.execute("Hello ROS2 from Android");
+      getExecutor().addNode(talkerNode);
     }
   };
 
@@ -103,11 +73,14 @@ public class ROS2TalkerActivity extends ROSActivity {
   private OnClickListener stopListener = new OnClickListener() {
     public void onClick(final View view) {
       Log.d(logtag, "onClick() called - stop button");
-      Toast.makeText(ROS2TalkerActivity.this, "The Stop button was clicked.",
-        Toast.LENGTH_LONG).show();
-      talker.cancel(true);
-      Button buttonStart = (Button) findViewById(R.id.buttonStart);
-      Button buttonStop = (Button) findViewById(R.id.buttonStop);
+      Toast
+          .makeText(ROS2TalkerActivity.this, "The Stop button was clicked.",
+                    Toast.LENGTH_LONG)
+          .show();
+      talkerNode.stop();
+      getExecutor().removeNode(talkerNode);
+      Button buttonStart = (Button)findViewById(R.id.buttonStart);
+      Button buttonStop = (Button)findViewById(R.id.buttonStop);
       buttonStart.setEnabled(true);
       buttonStop.setEnabled(false);
       Log.d(logtag, "onClick() ended - stop button");

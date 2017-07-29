@@ -17,32 +17,24 @@ package org.ros2.examples.android.listener;
 
 import android.widget.TextView;
 
-import org.ros2.rcljava.RCLJava;
-import org.ros2.rcljava.node.AbstractComposableNode;
-import org.ros2.rcljava.node.ComposableNode;
-import org.ros2.rcljava.node.Node;
+import org.ros2.rcljava.node.BaseComposableNode;
 import org.ros2.rcljava.subscription.Subscription;
 
-public class ListenerNode implements ComposableNode {
-  private final String name;
+public class ListenerNode extends BaseComposableNode {
   private final String topic;
 
   private final TextView listenerView;
 
   private Subscription<std_msgs.msg.String> subscriber;
 
-  private Node node;
-
-  public ListenerNode(final String name, final String topic, final TextView listenerView) {
-    this.name = name;
+  public ListenerNode(final String name, final String topic,
+                      final TextView listenerView) {
+    super(name);
     this.topic = topic;
     this.listenerView = listenerView;
-    this.node = RCLJava.createNode(this.name);
-    this.subscriber = this.node.<std_msgs.msg.String>createSubscription(std_msgs.msg.String.class, this.topic,
-        msg -> this.listenerView.append("Hello ROS2 from Android" + msg.getData() + "\r\n"));
-  }
-
-  public Node getNode() {
-    return node;
+    this.subscriber = this.node.<std_msgs.msg.String>createSubscription(
+        std_msgs.msg.String.class, this.topic, msg
+        -> this.listenerView.append("Hello ROS2 from Android" + msg.getData() +
+                                    "\r\n"));
   }
 }

@@ -17,28 +17,21 @@ package org.ros2.examples.android.talker;
 
 import android.widget.TextView;
 
-import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.node.BaseComposableNode;
-import org.ros2.rcljava.node.ComposableNode;
-import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.publisher.Publisher;
 
 public class TalkerNode extends BaseComposableNode {
   private final String topic;
 
-  private final TextView listenerView;
-
   private Publisher<std_msgs.msg.String> publisher;
 
-  private Node node;
-
   private int count;
-  
-  public TalkerNode(final String name, final String topic, final TextView listenerView) {
+
+  public TalkerNode(final String name, final String topic) {
     super(name);
     this.topic = topic;
-    this.listenerView = listenerView;
-    this.publisher = this.node.<std_msgs.msg.String>createPublisher(std_msgs.msg.String.class, this.topic);
+    this.publisher = this.node.<std_msgs.msg.String>createPublisher(
+        std_msgs.msg.String.class, this.topic);
   }
 
   public void start() {
@@ -46,7 +39,7 @@ public class TalkerNode extends BaseComposableNode {
       this.timer.cancel();
     }
     this.count = 0;
-    this.timer = node.createTimer(500, TimeUnit.MILLISECONDS, this::onTimer);
+    this.timer = node.createTimer(500, TimeUnit.MILLISECONDS, this ::onTimer);
   }
 
   private void onTimer() {
