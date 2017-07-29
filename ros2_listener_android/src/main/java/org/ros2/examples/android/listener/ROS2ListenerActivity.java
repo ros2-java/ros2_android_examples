@@ -15,8 +15,6 @@
 
 package org.ros2.examples.android.listener;
 
-import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -31,45 +29,15 @@ import org.ros2.rcljava.consumers.Consumer;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.subscription.Subscription;
 
-public class ROS2ListenerActivity extends Activity {
+import org.ros2.android.activity.ROSActivity;
 
-  private Listener listener;
+public class ROS2ListenerActivity extends ROSActivity {
+
+  private ListenerNode listenerNode;
 
   private TextView listenerView;
 
-  private class Listener extends AsyncTask<String, String, String> {
-    @Override
-    protected String doInBackground(final String... text) {
-      Node node = RCLJava.createNode("listener");
-      Subscription<std_msgs.msg.String> chatterSubscription = node.<
-          std_msgs.msg.String>createSubscription(
-            std_msgs.msg.String.class, "chatter",
-            new Consumer<std_msgs.msg.String>() {
-
-              @Override
-              public void accept(final std_msgs.msg.String msg) {
-                publishProgress("I heard: " + msg.getData());
-              }
-            }
-      );
-
-      while (!isCancelled() && RCLJava.ok()) {
-        RCLJava.spinOnce(node);
-      }
-
-      return null;
-    }
-
-    @Override
-    protected void onPostExecute(final String result) {
-    }
-
-    protected void onProgressUpdate(final String... progress) {
-      listenerView.append(progress[0] + "\r\n");
-    }
-  }
-
-  private static String logtag = "ROS2ListenerActivity";
+  private static String logtag = ROS2ListenerActivity.class.getName();
 
   /** Called when the activity is first created. */
   @Override
@@ -77,32 +45,35 @@ public class ROS2ListenerActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
 
-    Button buttonStart = (Button) findViewById(R.id.buttonStart);
+    Button buttonStart = (Button)findViewById(R.id.buttonStart);
     buttonStart.setOnClickListener(startListener);
 
-    Button buttonStop = (Button) findViewById(R.id.buttonStop);
+    Button buttonStop = (Button)findViewById(R.id.buttonStop);
     buttonStop.setOnClickListener(stopListener);
     buttonStop.setEnabled(false);
 
-    listenerView = (TextView) findViewById(R.id.listenerView);
+    listenerView = (TextView)findViewById(R.id.listenerView);
     listenerView.setMovementMethod(new ScrollingMovementMethod());
 
     RCLJava.rclJavaInit();
+
+    listenerNode =
+        new ListenerNode("android_listener_node", "topic", listenerView);
   }
 
-  //Create an anonymous implementation of OnClickListener
+  // Create an anonymous implementation of OnClickListener
   private OnClickListener startListener = new OnClickListener() {
     public void onClick(final View view) {
       Log.d(logtag, "onClick() called - start button");
-      Toast.makeText(ROS2ListenerActivity.this, "The Start button was clicked.",
+      Toast.makeText(
+        ROS2ListenerActivity.this, "The Start button was clicked.",
         Toast.LENGTH_LONG).show();
       Log.d(logtag, "onClick() ended - start button");
-      Button buttonStart = (Button) findViewById(R.id.buttonStart);
-      Button buttonStop = (Button) findViewById(R.id.buttonStop);
+      Button buttonStart = (Button)findViewById(R.id.buttonStart);
+      Button buttonStop = (Button)findViewById(R.id.buttonStop);
       buttonStart.setEnabled(false);
       buttonStop.setEnabled(true);
-      listener = new Listener();
-      listener.execute("Hello ROS2 from Android");
+      getExecutor().addNode(listenerNode);
     }
   };
 
@@ -110,11 +81,12 @@ public class ROS2ListenerActivity extends Activity {
   private OnClickListener stopListener = new OnClickListener() {
     public void onClick(final View view) {
       Log.d(logtag, "onClick() called - stop button");
-      Toast.makeText(ROS2ListenerActivity.this, "The Stop button was clicked.",
+      Toast.makeText(
+        ROS2ListenerActivity.this, "The Stop button was clicked.",
         Toast.LENGTH_LONG).show();
-      listener.cancel(true);
-      Button buttonStart = (Button) findViewById(R.id.buttonStart);
-      Button buttonStop = (Button) findViewById(R.id.buttonStop);
+      getExecutor().removeNode(listenerNode);
+      Button buttonStart = (Button)findViewById(R.id.buttonStart);
+      Button buttonStop = (Button)findViewById(R.id.buttonStop);
       buttonStart.setEnabled(true);
       buttonStop.setEnabled(false);
       Log.d(logtag, "onClick() ended - stop button");

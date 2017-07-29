@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: org.ros2.tools.gradle.AmentPlugin
+apply plugin: 'me.tatarka.retrolambda'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 android {
   compileSdkVersion 25
@@ -22,6 +26,11 @@ buildscript {
 
   dependencies {
     classpath 'com.android.tools.build:gradle:2.3.3'
-    classpath 'gradle.plugin.org.ros2.tools.gradle:ament:0.3.0'
+    classpath 'org.ros2.tools.gradle:ament:0.4.0'
+    classpath 'me.tatarka:gradle-retrolambda:3.6.1'
   }
+}
+
+repositories {
+   mavenCentral()
 }

@@ -15,8 +15,6 @@
 
 package org.ros2.examples.android.talker;
 
-import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +26,9 @@ import org.ros2.rcljava.RCLJava;
 import org.ros2.rcljava.node.Node;
 import org.ros2.rcljava.publisher.Publisher;
 
-public class ROS2TalkerActivity extends Activity {
+import org.ros2.android.activity.ROSActivity
+
+public class ROS2TalkerActivity extends ROSActivity {
 
   private Talker talker;
 
@@ -64,7 +64,7 @@ public class ROS2TalkerActivity extends Activity {
     }
   }
 
-  private static String logtag = "ROS2TalkerActivity";
+  private static String logtag = ROS2TalkerActivity.class.getName();
 
   /** Called when the activity is first created. */
   @Override

@@ -12,10 +12,10 @@
   <buildtool_depend>rosidl_default_generators</buildtool_depend>
   <buildtool_depend>rosidl_generator_java</buildtool_depend>
 
-  <build_depend>rcljava</build_depend>
+  <build_depend>rclandroid</build_depend>
   <build_depend>std_msgs</build_depend>
 
-  <exec_depend>rcljava</exec_depend>
+  <exec_depend>rclandroid</exec_depend>
   <exec_depend>std_msgs</exec_depend>
 
   <export>
