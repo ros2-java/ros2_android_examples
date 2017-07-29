@@ -15,10 +15,11 @@
 
 package org.ros2.examples.android.talker;
 
-import android.widget.TextView;
+import java.util.concurrent.TimeUnit;
 
 import org.ros2.rcljava.node.BaseComposableNode;
 import org.ros2.rcljava.publisher.Publisher;
+import org.ros2.rcljava.timer.WallTimer;
 
 public class TalkerNode extends BaseComposableNode {
   private final String topic;
@@ -26,6 +27,8 @@ public class TalkerNode extends BaseComposableNode {
   private Publisher<std_msgs.msg.String> publisher;
 
   private int count;
+
+  private WallTimer timer;
 
   public TalkerNode(final String name, final String topic) {
     super(name);
