@@ -42,7 +42,7 @@ public class TalkerNode extends BaseComposableNode {
       this.timer.cancel();
     }
     this.count = 0;
-    this.timer = node.createTimer(500, TimeUnit.MILLISECONDS, this ::onTimer);
+    this.timer = node.createWallTimer(500, TimeUnit.MILLISECONDS, this ::onTimer);
   }
 
   private void onTimer() {
