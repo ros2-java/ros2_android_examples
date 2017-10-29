@@ -17,11 +17,16 @@ package org.ros2.examples.android.talker;
 
 import java.util.concurrent.TimeUnit;
 
+import android.util.Log;
+
 import org.ros2.rcljava.node.BaseComposableNode;
 import org.ros2.rcljava.publisher.Publisher;
 import org.ros2.rcljava.timer.WallTimer;
 
 public class TalkerNode extends BaseComposableNode {
+
+  private static String logtag = TalkerNode.class.getName();
+
   private final String topic;
 
   private Publisher<std_msgs.msg.String> publisher;
@@ -38,6 +43,7 @@ public class TalkerNode extends BaseComposableNode {
   }
 
   public void start() {
+    Log.d(logtag, "TalkerNode::start()");
     if (this.timer != null) {
       this.timer.cancel();
     }
@@ -53,6 +59,7 @@ public class TalkerNode extends BaseComposableNode {
   }
 
   public void stop() {
+    Log.d(logtag, "TalkerNode::stop()");
     if (this.timer != null) {
       this.timer.cancel();
     }

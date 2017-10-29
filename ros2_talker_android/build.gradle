@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: org.ros2.tools.gradle.AmentPlugin
+apply plugin: 'org.ros2.tools.gradle'
 apply plugin: 'me.tatarka.retrolambda'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -26,7 +26,7 @@ buildscript {
 
   dependencies {
     classpath 'com.android.tools.build:gradle:2.3.3'
-    classpath 'gradle.plugin.org.ros2.tools.gradle:ament:0.5.1'
+    classpath 'gradle.plugin.org.ros2.tools.gradle:ament:0.6.1'
     classpath 'me.tatarka:gradle-retrolambda:3.6.1'
   }
 }

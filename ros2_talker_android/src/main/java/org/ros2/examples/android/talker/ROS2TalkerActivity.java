@@ -66,6 +66,7 @@ public class ROS2TalkerActivity extends ROSActivity {
       buttonStart.setEnabled(false);
       buttonStop.setEnabled(true);
       getExecutor().addNode(talkerNode);
+      talkerNode.start();
     }
   };
 
@@ -84,6 +85,7 @@ public class ROS2TalkerActivity extends ROSActivity {
       buttonStart.setEnabled(true);
       buttonStop.setEnabled(false);
       Log.d(logtag, "onClick() ended - stop button");
+      talkerNode.stop();
     }
   };
 }
