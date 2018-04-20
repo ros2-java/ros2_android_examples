@@ -58,7 +58,7 @@ public class ROS2ListenerActivity extends ROSActivity {
     RCLJava.rclJavaInit();
 
     listenerNode =
-        new ListenerNode("android_listener_node", "topic", listenerView);
+        new ListenerNode("android_listener_node", "chatter", listenerView);
   }
 
   // Create an anonymous implementation of OnClickListener
