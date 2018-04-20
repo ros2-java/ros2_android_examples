@@ -34,7 +34,7 @@ public class ListenerNode extends BaseComposableNode {
     this.listenerView = listenerView;
     this.subscriber = this.node.<std_msgs.msg.String>createSubscription(
         std_msgs.msg.String.class, this.topic, msg
-        -> this.listenerView.append("Hello ROS2 from Android" + msg.getData() +
+        -> this.listenerView.append("Hello ROS2 from Android: " + msg.getData() +
                                     "\r\n"));
   }
 }

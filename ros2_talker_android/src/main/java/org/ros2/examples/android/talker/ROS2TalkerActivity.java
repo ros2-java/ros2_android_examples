@@ -49,7 +49,7 @@ public class ROS2TalkerActivity extends ROSActivity {
 
     RCLJava.rclJavaInit();
 
-    talkerNode = new TalkerNode("android_talker_node", "topic");
+    talkerNode = new TalkerNode("android_talker_node", "chatter");
   }
 
   // Create an anonymous implementation of OnClickListener
