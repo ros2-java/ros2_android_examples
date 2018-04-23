@@ -23,16 +23,18 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import org.ros2.rcljava.RCLJava;
-import org.ros2.rcljava.node.Node;
-import org.ros2.rcljava.publisher.Publisher;
 
 import org.ros2.android.activity.ROSActivity;
 
 public class ROS2TalkerActivity extends ROSActivity {
 
+  private static final String IS_WORKING = "isWorking";
+
   private TalkerNode talkerNode;
 
   private static String logtag = ROS2TalkerActivity.class.getName();
+
+  private boolean isWorking;
 
   /** Called when the activity is first created. */
   @Override
@@ -40,16 +42,21 @@ public class ROS2TalkerActivity extends ROSActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
 
+    if (savedInstanceState != null) {
+      isWorking = savedInstanceState.getBoolean(IS_WORKING);
+    }
+
     Button buttonStart = (Button)findViewById(R.id.buttonStart);
     buttonStart.setOnClickListener(startListener);
 
     Button buttonStop = (Button)findViewById(R.id.buttonStop);
     buttonStop.setOnClickListener(stopListener);
-    buttonStop.setEnabled(false);
 
     RCLJava.rclJavaInit();
 
     talkerNode = new TalkerNode("android_talker_node", "chatter");
+
+    changeState(isWorking);
   }
 
   // Create an anonymous implementation of OnClickListener
@@ -63,10 +70,7 @@ public class ROS2TalkerActivity extends ROSActivity {
       Log.d(logtag, "onClick() ended - start button");
       Button buttonStart = (Button)findViewById(R.id.buttonStart);
       Button buttonStop = (Button)findViewById(R.id.buttonStop);
-      buttonStart.setEnabled(false);
-      buttonStop.setEnabled(true);
-      getExecutor().addNode(talkerNode);
-      talkerNode.start();
+      changeState(true);
     }
   };
 
@@ -78,14 +82,32 @@ public class ROS2TalkerActivity extends ROSActivity {
           .makeText(ROS2TalkerActivity.this, "The Stop button was clicked.",
                     Toast.LENGTH_LONG)
           .show();
-      talkerNode.stop();
-      getExecutor().removeNode(talkerNode);
-      Button buttonStart = (Button)findViewById(R.id.buttonStart);
-      Button buttonStop = (Button)findViewById(R.id.buttonStop);
-      buttonStart.setEnabled(true);
-      buttonStop.setEnabled(false);
+      changeState(false);
       Log.d(logtag, "onClick() ended - stop button");
       talkerNode.stop();
     }
   };
+
+  private void changeState(boolean isWorking) {
+    this.isWorking = isWorking;
+    Button buttonStart = (Button)findViewById(R.id.buttonStart);
+    Button buttonStop = (Button)findViewById(R.id.buttonStop);
+    buttonStart.setEnabled(!isWorking);
+    buttonStop.setEnabled(isWorking);
+    if (isWorking){
+      getExecutor().addNode(talkerNode);
+      talkerNode.start();
+    } else {
+      talkerNode.stop();
+      getExecutor().removeNode(talkerNode);
+    }
+  }
+
+  @Override
+  protected void onSaveInstanceState(Bundle outState) {
+    if (outState != null) {
+      outState.putBoolean(IS_WORKING, isWorking);
+    }
+    super.onSaveInstanceState(outState);
+  }
 }
