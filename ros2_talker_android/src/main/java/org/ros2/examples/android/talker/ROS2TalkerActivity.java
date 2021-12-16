@@ -84,7 +84,6 @@ public class ROS2TalkerActivity extends ROSActivity {
           .show();
       changeState(false);
       Log.d(logtag, "onClick() ended - stop button");
-      talkerNode.stop();
     }
   };
 
